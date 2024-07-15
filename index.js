@@ -13,6 +13,12 @@ app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/",(req,res)=>{
+    return res.json({
+        status:"success"
+    })
+})
+
 app.get("/sell/:id",async (req,res)=>{
     const targetToken=req.params.id;
     const swapMarket=await getSwapMarket(targetToken);
@@ -29,6 +35,8 @@ app.post("/sell",async (req,res)=>{
     const result=await swapTokenRapid(targetToken,swapMarket.poolKeys,0.001,true);
     return res.json({status:"success",data:result})
 })
+
+
 
 // app.get("/contract/:id",async (req,res)=>{
 //     const targetToken=req.params.id;
