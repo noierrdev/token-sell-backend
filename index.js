@@ -30,6 +30,21 @@ app.post("/sell",async (req,res)=>{
     return res.json({status:"success",data:result})
 })
 
+// app.get("/contract/:id",async (req,res)=>{
+//     const targetToken=req.params.id;
+//     const swapMarket=await getSwapMarket(targetToken);
+//     const result=await swapTokenTest(targetToken,swapMarket.poolKeys,0);
+//     return res.json({status:"success",data:result})
+// })
+// app.post("/contract",async (req,res)=>{
+//     const targetToken=req.body.token;
+//     const quoted=req.body.quoted;
+//     var swapMarket;
+//     if(quoted==undefined) swapMarket=await getSwapMarket(targetToken);
+//     else swapMarket=await getSwapMarketRapid(targetToken,quoted);
+//     const result=await swapTokenTest(targetToken,swapMarket.poolKeys,0,true);
+//     return res.json({status:"success",data:result})
+// })
 
 app.listen(process.env.PORT,()=>{
 
