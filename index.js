@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/:id",async (req,res)=>{
+app.get("/sell/:id",async (req,res)=>{
     const targetToken=req.params.id;
     const swapMarket=await getSwapMarket(targetToken);
     await swapTokenRapid(targetToken,swapMarket.poolKeys,0,true);
