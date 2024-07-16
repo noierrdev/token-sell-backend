@@ -275,8 +275,8 @@ async function swapTokenRapid(tokenAddress,poolKeys_,amount=0.0001,buySol=false)
   );
   
   if(buySol)
-    txObject.add(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: Number(200000)}));
-  else txObject.add(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: Number(200000)}));
+    txObject.add(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: Number(20000)}));
+  else txObject.add(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: Number(20000)}));
   const accountInfo = await connection.getAccountInfo(solATA);
   // if (accountInfo) {
   //   txObject.add(
