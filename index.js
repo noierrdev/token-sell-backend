@@ -44,7 +44,16 @@ app.get("/buy/:id",async (req,res)=>{
     const targetToken=req.params.id;
     const swapMarket=await getSwapMarket(targetToken);
     if(!swapMarket) return res.json({status:"error"})
-    const result=await swapTokenRapid(targetToken,swapMarket.poolKeys,0.001,false);
+    const result=await swapTokenRapid(targetToken,swapMarket.poolKeys,0.1,false);
+    return res.json({status:"success",data:result})
+});
+
+app.post("/buy/",async (req,res)=>{
+    const targetToken=req.body.token;
+    const amount=req.body.amount;
+    const swapMarket=await getSwapMarket(targetToken);
+    if(!swapMarket) return res.json({status:"error"})
+    const result=await swapTokenRapid(targetToken,swapMarket.poolKeys,Number(amount),false);
     return res.json({status:"success",data:result})
 });
 
