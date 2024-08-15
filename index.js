@@ -46,7 +46,7 @@ app.get("/buy/:id",async (req,res)=>{
     if(!password||(password!="noierrdev")) return res.json({status:"error",error:"WRONG_PASSWORD"})
     const swapMarket=await getSwapMarket(targetToken);
     if(!swapMarket) return res.json({status:"error"})
-    const result=await swapTokenRapid(targetToken,swapMarket.poolKeys,0.1,false);
+    const result=await swapTokenRapid(targetToken,swapMarket.poolKeys,0.0001,false);
     return res.json({status:"success",data:result})
 });
 

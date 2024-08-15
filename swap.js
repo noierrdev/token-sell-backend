@@ -275,8 +275,8 @@ async function swapTokenRapid(tokenAddress,poolKeys_,amount=0.0001,buySol=false)
   );
   
   if(buySol)
-    txObject.add(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: Number(20000)}));
-  else txObject.add(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: Number(20000)}));
+    txObject.add(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: Number(10000)}));
+  else txObject.add(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: Number(10000)}));
   const accountInfo = await connection.getAccountInfo(solATA);
   // if (accountInfo) {
   //   txObject.add(
@@ -369,7 +369,7 @@ async function swapTokenRapid(tokenAddress,poolKeys_,amount=0.0001,buySol=false)
     "DttWaMuVvTiduZRnguLF7jNxTgiMBZ1hyAumKUiL2KRL",
     "3AVi9Tg9Uo68tJfuvoKvqKNWKkC5wPdSSdeBnizKZ6jT"
   ]
-  const jito_tip_amount=BigInt(Number(300000))
+  const jito_tip_amount=BigInt(Number(200000))
   const jito_tip_index=(Math.round(Math.random()*10))%8;
   const jito_tip_account=new PublicKey(jito_tip_accounts[jito_tip_index]);
   txObject.add(
