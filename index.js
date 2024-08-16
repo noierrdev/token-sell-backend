@@ -61,7 +61,7 @@ app.post("/buy/",async (req,res)=>{
 
 app.get("/pumpfun/sell/:id",async (req,res)=>{
     const targetToken=req.params.id;
-    await pumpfunSwapTransaction(targetToken,0.001,false);
+    await pumpfunSwapTransaction(targetToken,0.1,false);
     return res.json({status:"success"})
 })
 
