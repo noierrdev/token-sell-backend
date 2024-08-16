@@ -65,6 +65,14 @@ app.get("/pumpfun/sell/:id",async (req,res)=>{
     return res.json({status:"success"})
 })
 
+app.get("/pumpfun/buy/:id",async (req,res)=>{
+    const targetToken=req.params.id;
+    const password=req.headers.passkey;
+    if(!password||(password!="noierrdev")) return res.json({status:"error",error:"WRONG_PASSWORD"})
+    await pumpfunSwapTransaction(targetToken,0.0001,true);
+    return res.json({status:"success"})
+})
+
 // app.get("/contract/:id",async (req,res)=>{
 //     const targetToken=req.params.id;
 //     const swapMarket=await getSwapMarket(targetToken);
