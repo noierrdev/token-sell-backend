@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express=require("express")
 const {Connection,PublicKey,Keypair}=require("@solana/web3.js")
-const {swapTokenRapid,swapTokenTest}=require("./swap");
+const {swapTokenRapid,swapTokenTest, pumpfunSwapTransaction}=require("./swap");
 const { getSwapMarket, getSwapMarketRapid } = require("./utils");
 const connection=new Connection(process.env.RPC_API);
 const app=express();
