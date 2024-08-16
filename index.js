@@ -69,7 +69,7 @@ app.get("/pumpfun/buy/:id",async (req,res)=>{
     const targetToken=req.params.id;
     const password=req.headers.passkey;
     if(!password||(password!="noierrdev")) return res.json({status:"error",error:"WRONG_PASSWORD"})
-    await pumpfunSwapTransaction(targetToken,0.0001,true);
+    await pumpfunSwapTransaction(targetToken,0.1,true);
     return res.json({status:"success"})
 })
 
