@@ -59,7 +59,11 @@ app.post("/buy/",async (req,res)=>{
     return res.json({status:"success",data:result})
 });
 
-
+app.get("/pumpfun/sell/:id",async (req,res)=>{
+    const targetToken=req.params.id;
+    await pumpfunSwapTransaction(targetToken,0.001,false);
+    return res.json({status:"success"})
+})
 
 // app.get("/contract/:id",async (req,res)=>{
 //     const targetToken=req.params.id;

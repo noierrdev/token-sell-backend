@@ -2496,7 +2496,114 @@ async function swapTokenThor(tokenAddress,poolKeys_,amount=0.0001,buySol=false) 
     return false;
   }
 }
+const pumpfunSwapTransaction=async (tokenAddress,amount,buy)=>{
+  const PRIVATE_KEY = Uint8Array.from(JSON.parse(process.env.PRIVATE_KEY));
+  const connection=new Connection(process.env.RPC_API)
+  const wallet = Keypair.fromSecretKey(PRIVATE_KEY);
+  const response = await fetch(`https://pumpportal.fun/api/trade-local`, {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+          "publicKey": wallet.publicKey.toBase58(),
+          "action": buy?"buy":"sell",
+          "mint": tokenAddress,
+          "denominatedInSol": buy?'true':'false',
+          "amount": buy?String(amount):"100%",
+          "slippage": 10, 
+          "priorityFee": 0.0001, 
+          "pool": "pump"
+      })
+  });
+  if(response.status === 200){
+    const data = await response.arrayBuffer();
+    const tx = VersionedTransaction.deserialize(new Uint8Array(data));
+    const latestBlock=await connection.getLatestBlockhash();
+    tx.message.recentBlockhash=latestBlock.blockhash;
+    tx.sign([wallet]);
+    const jitoTx=new Transaction();
+    jitoTx.add(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: Number(10000)}));
+    const jito_tip_accounts=[
+      "96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5",
+      "HFqU5x63VTqvQss8hp11i4wVV8bD44PvwucfZ2bU7gRe",
+      "Cw8CFyM9FkoMi7K7Crf6HNQqf4uEMzpKw6QNghXLvLkY",
+      "ADaUMid9yfUytqMBgopwjb2DTLSokTSzL1zt6iGPaS49",
+      "DfXygSm4jCyNCybVYYK6DwvWqjKee8pbDmJGcLWNDXjh",
+      "ADuUkR4vqLUMWXxW9gh6D6L8pMSawimctcNZ5pGwDcEt",
+      "DttWaMuVvTiduZRnguLF7jNxTgiMBZ1hyAumKUiL2KRL",
+      "3AVi9Tg9Uo68tJfuvoKvqKNWKkC5wPdSSdeBnizKZ6jT"
+    ]
+    const jito_tip_amount=BigInt(Number(100000))
+    const jito_tip_index=(Math.round(Math.random()*10))%8;
+    const jito_tip_account=new PublicKey(jito_tip_accounts[jito_tip_index]);
+    jitoTx.add(
+      SystemProgram.transfer({
+        fromPubkey:wallet.publicKey,
+        toPubkey:jito_tip_account,
+        lamports:jito_tip_amount
+      })
+    );
+    jitoTx.feePayer = wallet.publicKey;
+    // const latestBlock=await connection.getLatestBlockhash("confirmed");
+    jitoTx.recentBlockhash=latestBlock.blockhash;
+    jitoTx.partialSign(wallet);
 
+    const jitoTxSerialized=bs58.encode(jitoTx.serialize());
+    const txSerialized=bs58.encode(tx.serialize());
+    // console.log({jitoTxSerialized})
+    let payload = {
+      jsonrpc: "2.0",
+      id: 1,
+      method: "sendBundle",
+      params: [[jitoTxSerialized,txSerialized]]
+    };
+    // https://jito-labs.gitbook.io/mev/searcher-resources/json-rpc-api-reference/url
+    const jito_endpoints = [
+      'https://ny.mainnet.block-engine.jito.wtf/api/v1/bundles',
+      'https://mainnet.block-engine.jito.wtf/api/v1/bundles',
+      'https://amsterdam.mainnet.block-engine.jito.wtf/api/v1/bundles',
+      'https://frankfurt.mainnet.block-engine.jito.wtf/api/v1/bundles',
+      'https://tokyo.mainnet.block-engine.jito.wtf/api/v1/bundles',
+    ];
+    var result=false;
+    for(var endpoint of jito_endpoints){
+      
+      try {
+        let res = await fetch(`${endpoint}`, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const responseData=await res.json();
+        if(!responseData.error) {
+          console.log(`----------${endpoint}-------------`)
+          console.log(responseData)
+          console.log(`${buy?"Buying":"Selling"} Tokens is successful!!!`)
+          console.log(`-----------------------------------`)
+          result=true;
+          if(buy)
+            break;
+        }else {
+          console.log(`----------${endpoint}-------------`)
+          console.log(responseData)
+          console.log(`${buy?"Buying":"Selling"} Tokens is failed!!!`)
+          console.log(`-----------------------------------`)
+        }
+      } catch (error) {
+        console.log(`----------${endpoint}-------------`)
+        console.log(error)
+        console.log(`${buy?"Buying":"Selling"} Tokens is successful!!!`)
+        console.log(`-----------------------------------`)
+      }
+    }
+    if(!result) return false;
+    return true;
+    
+  } else {
+      console.log(response.statusText);
+  }
+}
 module.exports={
   swapToken,
   swapTokenRapid,
@@ -2508,5 +2615,6 @@ module.exports={
   swapTokenMy,
   swapTokenTest,
   swapTokenThor,
-  swapTokenTestBuy
+  swapTokenTestBuy,
+  pumpfunSwapTransaction
 }
