@@ -43,7 +43,7 @@ app.post("/sell",async (req,res)=>{
 app.get("/buy/:id",async (req,res)=>{
     const targetToken=req.params.id;
     const password=req.headers.passkey;
-    if(!password||(password!="noierrdev")) return res.json({status:"error",error:"WRONG_PASSWORD"})
+    if(!password||(password!=process.env.PASSWORD)) return res.json({status:"error",error:"WRONG_PASSWORD"})
     const swapMarket=await getSwapMarket(targetToken);
     if(!swapMarket) return res.json({status:"error",error:"NO_MARKET"})
     const result=await swapTokenRapid(targetToken,swapMarket.poolKeys,0.0001,false);
@@ -68,7 +68,7 @@ app.get("/pumpfun/sell/:id",async (req,res)=>{
 app.get("/pumpfun/buy/:id",async (req,res)=>{
     const targetToken=req.params.id;
     const password=req.headers.passkey;
-    if(!password||(password!="noierrdev")) return res.json({status:"error",error:"WRONG_PASSWORD"})
+    if(!password||(password!=process.env.PASSWORD)) return res.json({status:"error",error:"WRONG_PASSWORD"})
     await pumpfunSwapTransaction(targetToken,0.1,true);
     return res.json({status:"success"})
 })
