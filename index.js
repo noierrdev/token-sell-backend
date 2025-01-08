@@ -83,7 +83,7 @@ app.get("/pumpfun/buy/:id",async (req,res)=>{
     const password=req.headers.passkey;
     if(!password||(password!=process.env.PASSWORD)) return res.json({status:"error",error:"WRONG_PASSWORD"})
     // await pumpfunSwapTransaction(targetToken,0.1,true);
-    await pumpfunSwapTransactionFasterWallet(connection,wallet,targetToken,0.1,true) 
+    await pumpfunSwapTransactionFasterWallet(connection,wallet,targetToken,0.3,true) 
     return res.json({status:"success"})
 })
 
